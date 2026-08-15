@@ -22,7 +22,7 @@ public static class ReportWriter
         var markers = result.Profile.Transitions.Select(x => new Marker(x.DistanceMm, x.Name)).ToArray();
         WriteText(Path.Combine(outputDirectory, "speed.svg"), SvgChart.Render("Motion profile", "Distance (mm)",
             [new("Velocity", "mm/s", new Series("Velocity", "#2563eb", result.Samples.Select(x => new Point(x.DistanceMm, x.VelocityMmPerSecond)).ToArray())),
-             new("Acceleration", "mm/s²", result.Samples.Select(x => new Point(x.DistanceMm, x.AccelerationMmPerSecondSquared)).ToArray())], markers));
+             new("Acceleration", "mm/s²", new Series("Acceleration", "#dc2626", result.Samples.Select(x => new Point(x.DistanceMm, x.AccelerationMmPerSecondSquared)).ToArray()))], markers));
         WriteText(Path.Combine(outputDirectory, "flow.svg"), SvgChart.Render("Flow", "Distance (mm)",
             [new("Flow", "mm³/s",
                 new Series("Requested", "#2563eb", result.Samples.Select(x => new Point(x.DistanceMm, x.RequestedFlowMm3PerSecond)).ToArray()),
