@@ -11,6 +11,7 @@ public static class ReportWriter
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         WriteIndented = true,
+        Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() },
     };
 
     public static void WriteRun(string outputDirectory, SimulationResult result, RunMetrics metrics)
