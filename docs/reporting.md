@@ -1,21 +1,20 @@
-# Reporting Specification
+# Reporting Contract
 
-## Output directory behavior
+## Output directories
 
-The CLI should resolve one output directory per command invocation. It may create subdirectories for compared runs, but it must never recursively delete an arbitrary path supplied by the user.
+Each command resolves one output directory and creates it when necessary. Reporting overwrites only the known artifact filenames inside that directory. It never recursively deletes a caller-supplied path.
 
-Suggested compare layout:
+A comparison contains the standard selected-K artifacts at its root, a `comparison.svg`, and full standard run artifacts in both subdirectories:
 
 ```text
 artifacts/corner-compare/
 ├── no-pa/
-│   ├── run.json
-│   ├── metrics.json
-│   └── samples.csv
+│   └── standard run artifacts
 ├── selected-k/
-│   ├── run.json
-│   ├── metrics.json
-│   └── samples.csv
+│   └── standard run artifacts
+├── run.json
+├── metrics.json
+├── samples.csv
 ├── speed.svg
 ├── pressure.svg
 ├── flow.svg
@@ -23,149 +22,60 @@ artifacts/corner-compare/
 └── comparison.svg
 ```
 
-## CSV contract
+## CSV
 
-Use invariant culture and a header row.
-
-Recommended columns:
+`samples.csv` is UTF-8, uses invariant numeric formatting, contains one row per emitted sample, and has this exact header:
 
 ```text
-time_s
-distance_mm
-velocity_mm_s
-acceleration_mm_s2
-requested_flow_mm3_s
-requested_flow_derivative_mm3_s2
-advance_flow_mm3_s
-raw_drive_flow_mm3_s
-drive_flow_mm3_s
-drive_clamped
-nozzle_pressure
-equilibrium_pressure
-actual_flow_mm3_s
-flow_error_mm3_s
+time_s,distance_mm,velocity_mm_s,acceleration_mm_s2,requested_flow_mm3_s,requested_flow_derivative_mm3_s2,advance_flow_mm3_s,raw_drive_flow_mm3_s,drive_flow_mm3_s,drive_clamped,nozzle_pressure,equilibrium_pressure,actual_flow_mm3_s,flow_error_mm3_s
 ```
 
-CSV escaping must be correct even though current headers are simple.
+Booleans are lowercase `true` or `false`. Non-finite report data is rejected.
 
-## JSON contract
+## JSON
 
-`run.json` should contain:
+`run.json` contains:
 
-- application/version info when easily available;
+- application and numerical-model identifiers;
 - scenario name;
-- resolved geometry;
-- resolved plant parameters;
-- resolved PA parameters;
-- dt;
-- initial pressure mode/value;
-- total duration/distance;
+- resolved geometry, plant, and pressure-advance parameters;
+- timestep and initial-pressure mode/value;
+- total duration and distance;
 - transition metadata;
 - artifact filenames.
 
-`metrics.json` should contain all run and settling metrics.
+`metrics.json` contains all continuous, peak, directional-volume, clamp, and settling metrics. Enum values use stable names such as `ClampToZero`. JSON properties use camelCase.
 
-For AOT friendliness, prefer source-generated serialization metadata if practical.
+## SVG engine
 
-## SVG chart engine
+`SvgChart` is a narrowly scoped direct-SVG renderer. It provides aligned panels, axis scaling, invariant ticks, grid lines, legends, polylines, zero baselines, and vertical transition markers. Text is XML-escaped, and identical inputs produce identical SVG text. No chart package, HTML canvas, or JavaScript is used.
 
-Implement only what the project needs.
-
-Suggested primitives:
-
-- `SvgDocument`;
-- `SvgChartLayout`;
-- `SvgSeries`;
-- `SvgPoint`;
-- axis scaling helpers;
-- tick generator;
-- path/polyline writer;
-- legend writer;
-- transition marker writer.
-
-Do not introduce HTML canvas, JavaScript, or a charting dependency.
-
-## Required charts
+## Charts
 
 ### speed.svg
 
-X axis: distance (`mm`).
-
-Series:
-
-- velocity (`mm/s`);
-- acceleration (`mm/s²`).
-
-Because units differ, either:
-
-- use separate aligned panels in the same SVG, or
-- use a clearly labeled secondary Y axis.
-
-Prefer aligned panels for implementation simplicity and clarity.
+Two aligned distance-axis panels show velocity in `mm/s` and acceleration in `mm/s²`.
 
 ### flow.svg
 
-X axis: distance (`mm`).
-
-Series:
-
-- requested flow;
-- raw/final drive flow (choose final as primary, raw optional dashed/secondary representation);
-- actual flow.
-
-Mark clamp intervals or clamp points when present.
+The distance-axis flow panel shows requested, raw drive, final drive, and actual flow in `mm³/s`. Clamping is visible wherever raw and final drive diverge.
 
 ### pressure.svg
 
-X axis: distance (`mm`).
-
-Series:
-
-- nozzle pressure;
-- requested-flow equilibrium pressure `G * Q_r`.
-
-Optionally add drive equilibrium `G * Q_d` if it remains legible.
+The distance-axis pressure panel shows nozzle pressure and requested-flow equilibrium pressure `G * Q_r`.
 
 ### flow-error.svg
 
-X axis: distance (`mm`).
-
-Series:
-
-- signed error `Q_a - Q_r`.
-
-Draw zero baseline whenever visible. Negative region means under-flow, positive region means over-flow. Text labels should explain the sign convention.
+The distance-axis panel shows signed error `Q_a - Q_r` with a zero baseline. Negative values mean under-flow; positive values mean over-flow.
 
 ### comparison.svg
 
-X axis: distance (`mm`).
-
-Series:
-
-- requested flow;
-- actual flow for K=0;
-- actual flow for selected K.
-
-Use exactly the same scenario and plant parameters for both compared runs.
+The distance-axis panel shows requested flow, actual flow for K=0, and actual flow for the selected K. Both runs share the same resolved non-K configuration.
 
 ### k-sweep.svg
 
-X axis: K (`s`).
+The K axis is in seconds and the Y axis is IAFE in `mm³`. Vertical markers identify the best grid K and configured tau.
 
-Y axis: IAFE (`mm³`).
+## Robustness
 
-Mark the selected best K and, when convenient, the configured tau as an annotated vertical marker so users can visually compare them.
-
-## SVG robustness
-
-Axis code must handle:
-
-- min == max;
-- all zeros;
-- negative values;
-- very small ranges;
-- one-point series;
-- empty optional series;
-- XML-reserved characters in labels.
-
-Never emit `NaN`, `Infinity`, or scientific notation so extreme that labels become unreadable without a fallback formatter.
+Axis scaling handles constant series, all-zero values, negative values, tiny ranges, one-point series, and empty optional series without division by zero. Reports never contain `NaN` or `Infinity`. Every SVG has explicit width, height, viewBox, title, axis labels, units, and parseable XML structure.

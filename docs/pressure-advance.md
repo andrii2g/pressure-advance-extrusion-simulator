@@ -42,7 +42,7 @@ With an ideal first-order plant:
 - `K ≈ tau`: feed-forward approximately cancels lag;
 - `K > tau`: the command is over-shaped and can create opposite-sign transients.
 
-The default K sweep should make this visible.
+The default K sweep makes this visible.
 
 ## Clamp implications
 
@@ -59,7 +59,3 @@ This is useful, not a defect: it demonstrates that model inversion is limited by
 The simulator must report clamp count and preserve raw drive flow in samples.
 
 `AllowNegative` is an abstract experiment mode. It does not claim that a real extruder instantly realizes negative volumetric nozzle flow.
-
-## Model mismatch
-
-The MVP intentionally uses a plant that can be approximately cancelled by one feed-forward coefficient. Future extensions may use cascaded or nonlinear dynamics to demonstrate that feed-forward quality depends on model accuracy.
