@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/PressureAdvance.Cli/PressureAdvance.Cli.csproj" />
+    <Project Path="src/PressureAdvance.Core/PressureAdvance.Core.csproj" />
+    <Project Path="src/PressureAdvance.Reporting/PressureAdvance.Reporting.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/PressureAdvance.Core.Tests/PressureAdvance.Core.Tests.csproj" />
+    <Project Path="tests/PressureAdvance.Reporting.Tests/PressureAdvance.Reporting.Tests.csproj" />
+  </Folder>
+</Solution>
