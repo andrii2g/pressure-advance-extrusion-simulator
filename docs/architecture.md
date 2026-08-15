@@ -38,68 +38,6 @@ flowchart TD
     CoreTests --> Core
     ReportingTests --> Reporting
     ReportingTests --> Core
+    ReportingTests --> Cli
 ```
 
-## Suggested Core folders
-
-```text
-PressureAdvance.Core/
-├── Control/
-│   ├── IExtrusionFeedForward.cs
-│   ├── NoCompensationFeedForward.cs
-│   ├── PressureAdvanceFeedForward.cs
-│   ├── DriveCommand.cs
-│   └── DriveFlowPolicy.cs
-├── Extrusion/
-│   ├── ExtrusionGeometry.cs
-│   ├── ExtrusionDemand.cs
-│   └── ExtrusionDemandCalculator.cs
-├── Motion/
-│   ├── IMotionSegment.cs
-│   ├── MotionState.cs
-│   ├── ConstantVelocitySegment.cs
-│   ├── ConstantAccelerationSegment.cs
-│   ├── MotionProfile.cs
-│   ├── MotionTransition.cs
-│   └── BuiltInScenarios.cs
-├── Plant/
-│   ├── IExtrusionPlant.cs
-│   ├── PlantParameters.cs
-│   ├── PlantState.cs
-│   └── FirstOrderExtrusionPlant.cs
-├── Simulation/
-│   ├── SimulationOptions.cs
-│   ├── SimulationSample.cs
-│   ├── SimulationResult.cs
-│   └── SimulationEngine.cs
-├── Metrics/
-│   ├── RunMetrics.cs
-│   ├── RunMetricsCalculator.cs
-│   ├── SettlingOptions.cs
-│   ├── TransitionSettlingResult.cs
-│   └── SettlingAnalyzer.cs
-└── Sweeps/
-    ├── KSweepOptions.cs
-    ├── KSweepPoint.cs
-    ├── KSweepResult.cs
-    └── KSweepRunner.cs
-```
-
-## Reporting folders
-
-```text
-PressureAdvance.Reporting/
-├── Csv/
-│   └── SimulationCsvWriter.cs
-├── Json/
-│   ├── JsonReportWriter.cs
-│   └── ReportJsonContext.cs
-└── Svg/
-    ├── SvgChart.cs
-    ├── SvgSeries.cs
-    ├── SvgAxis.cs
-    ├── SvgWriter.cs
-    └── StandardCharts.cs
-```
-
-A source-generated `System.Text.Json` context is encouraged if it stays simple and improves future NativeAOT compatibility.

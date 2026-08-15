@@ -114,11 +114,11 @@ Test:
 - a single out-of-band sample inside the hold window resets the candidate;
 - simulation ending before the hold window completes means “unsettled/unavailable”;
 - zero post-flow uses the absolute tolerance floor;
-- a transition at the final sample cannot settle unless hold duration is zero, which the MVP should not allow.
+- a transition at the final sample cannot settle because hold duration must be positive.
 
 ## Aggregate settling fields
 
-Recommended aggregate fields:
+Aggregate fields:
 
 - transition count;
 - settled transition count;
