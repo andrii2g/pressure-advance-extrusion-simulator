@@ -1,0 +1,19 @@
+{
+  "scenario": "corner",
+  "geometry": {
+    "layerHeightMm": 0.2,
+    "extrusionWidthMm": 0.45
+  },
+  "plant": {
+    "timeConstantSeconds": 0.04,
+    "pressureGain": 1.0
+  },
+  "simulation": {
+    "timeStepSeconds": 0.001,
+    "initialPressure": "steady-state"
+  },
+  "pressureAdvance": {
+    "kSeconds": 0.04,
+    "driveFlowPolicy": "AllowNegative"
+  }
+}
