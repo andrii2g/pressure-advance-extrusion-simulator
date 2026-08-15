@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\PressureAdvance.Core\PressureAdvance.Core.csproj" />
     <ProjectReference Include="..\..\src\PressureAdvance.Reporting\PressureAdvance.Reporting.csproj" />
+    <ProjectReference Include="..\..\src\PressureAdvance.Cli\PressureAdvance.Cli.csproj" />
   </ItemGroup>
 
 </Project>

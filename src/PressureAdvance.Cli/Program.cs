@@ -1,1 +1,3 @@
-﻿Console.WriteLine("Hello, World!");
+using PressureAdvance.Cli;
+
+return CliApplication.Run(args);
